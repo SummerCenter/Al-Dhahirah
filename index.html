@@ -476,6 +476,114 @@
             100% { transform: translateX(100%) rotate(30deg); }
         }
 
+        /* زر المقارنة */
+        .compare-btn-container {
+            text-align: center;
+            margin: 2rem 0;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.5s forwards 0.8s;
+        }
+        
+        .compare-btn {
+            background: var(--accent-color);
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(244, 179, 80, 0.4);
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .compare-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(244, 179, 80, 0.6);
+            background: linear-gradient(135deg, #f4b350, #f8d56b);
+        }
+        
+        .compare-btn i {
+            transition: all 0.3s;
+        }
+        
+        .compare-btn:hover i {
+            transform: rotate(360deg);
+        }
+        
+        /* نافذة المقارنة */
+        .comparison-modal .modal-content {
+            border-radius: 20px;
+            overflow: hidden;
+            border: none;
+        }
+        
+        .comparison-modal .modal-header {
+            background: linear-gradient(270deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-bottom: none;
+            padding: 1.5rem;
+        }
+        
+        .comparison-modal .modal-body {
+            padding: 2rem;
+        }
+        
+        .comparison-chart-container {
+            margin-bottom: 2rem;
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .comparison-title {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            font-weight: bold;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .comparison-title::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: var(--accent-color);
+        }
+        
+        .center-legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+        
+        .modal-backdrop.show {
+            opacity: 0.8;
+        }
+
         /* التكيف مع الشاشات الصغيرة */
         @media (max-width: 1200px) {
             body {
@@ -590,6 +698,25 @@
             .guidance-section {
                 margin-top: -4rem;
             }
+
+            /* تعديلات للهواتف على نافذة المقارنة */
+            .comparison-modal .modal-dialog {
+                margin: 0.5rem;
+            }
+            
+            .comparison-modal .modal-body {
+                padding: 1rem;
+            }
+            
+            .comparison-chart-container {
+                padding: 1rem;
+            }
+            
+            .center-legend {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
@@ -621,6 +748,12 @@
                     <!-- سيتم ملؤها بالجافاسكريبت -->
                 </select>
             </div>
+        </div>
+
+        <div class="compare-btn-container" id="compareBtnContainer" style="display: none;">
+            <button type="button" class="compare-btn" id="compareBtn">
+                <i class="fas fa-chart-bar"></i> مقارنة جميع المراكز
+            </button>
         </div>
 
         <div id="center-info" class="row justify-content-center" style="display: none;">
@@ -735,6 +868,39 @@
         </div>
     </footer>
 
+    <!-- نافذة المقارنة -->
+    <div class="modal fade comparison-modal" id="comparisonModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">مقارنة إحصائية بين جميع المراكز</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="comparison-chart-container">
+                        <h5 class="comparison-title">عدد الطلبة</h5>
+                        <canvas id="comparisonStudentsChart"></canvas>
+                    </div>
+                    
+                    <div class="comparison-chart-container">
+                        <h5 class="comparison-title">عدد البرامج</h5>
+                        <canvas id="comparisonProgramsChart"></canvas>
+                    </div>
+                    
+                    <div class="comparison-chart-container">
+                        <h5 class="comparison-title">عدد المدربين</h5>
+                        <canvas id="comparisonTrainersChart"></canvas>
+                    </div>
+                    
+                    <div class="comparison-chart-container">
+                        <h5 class="comparison-title">النشاطات (رحلات وزيارات)</h5>
+                        <canvas id="comparisonActivitiesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // بيانات جدول Google Sheets
@@ -747,6 +913,8 @@
         const genderStats = document.getElementById('gender-stats');
         const statsHeader = document.getElementById('stats-header');
         const clickOutsideListener = document.getElementById('clickOutsideListener');
+        const compareBtnContainer = document.getElementById('compareBtnContainer');
+        const compareBtn = document.getElementById('compareBtn');
         
         // عناصر البيانات
         const centerName = document.getElementById('center-name');
@@ -776,6 +944,8 @@
         
         // المتغيرات العالمية للرسوم البيانية
         let pieChart, barChart, lineChart;
+        let allCentersData = [];
+        const comparisonModal = new bootstrap.Modal(document.getElementById('comparisonModal'));
         
         // ضبط إعدادات Chart.js للغة العربية
         Chart.defaults.font.family = 'Tajawal';
@@ -789,8 +959,15 @@
                 const csvData = await response.text();
                 const centers = parseCSV(csvData);
                 
+                allCentersData = centers;
+                
                 // تعبئة القائمة المنسدلة
                 populateSelect(centers);
+                
+                // إظهار زر المقارنة إذا كان هناك مراكز
+                if (centers.length > 0) {
+                    compareBtnContainer.style.display = 'block';
+                }
                 
                 // إضافة مستمع لحدث التغيير
                 centerSelect.addEventListener('change', (e) => {
@@ -813,6 +990,9 @@
                 centerInfo.addEventListener('click', (e) => {
                     e.stopPropagation();
                 });
+                
+                // مستمع لزر المقارنة
+                compareBtn.addEventListener('click', showComparisonModal);
                 
             } catch (error) {
                 console.error('حدث خطأ في جلب البيانات:', error);
@@ -900,7 +1080,7 @@
             
             studentsCount.textContent = students || 'غير متوفر';
             hallsCount.textContent = halls || 'غير متوفر';
-            programsCount.textContent = (programs !== undefined && programs !== null) ? programs : 'غير متوفر'; // التعديل هنا
+            programsCount.textContent = (programs !== undefined && programs !== null) ? programs : 'غير متوفر';
             tripsCount.textContent = trips || 'غير متوفر';
             visitsCount.textContent = visits || 'غير متوفر';
             trainersCount.textContent = trainers || 'غير متوفر';
@@ -1117,6 +1297,184 @@
             if (pieChart) pieChart.destroy();
             if (barChart) barChart.destroy();
             if (lineChart) lineChart.destroy();
+        }
+        
+        // عرض نافذة المقارنة
+        function showComparisonModal() {
+            // تنسيق البيانات للمقارنة
+            const centersNames = allCentersData.map(center => center['اسم المركز']);
+            const studentsData = allCentersData.map(center => parseInt(center['عدد الطلبة']) || 0);
+            const programsData = allCentersData.map(center => parseInt(center['عدد البرامج المثقرة']) || 0);
+            const trainersData = allCentersData.map(center => parseInt(center['عدد المدربين']) || 0);
+            const tripsData = allCentersData.map(center => parseInt(center['عدد الرحلات']) || 0);
+            const visitsData = allCentersData.map(center => parseInt(center['عدد الزيارات الخارجية']) || 0);
+            
+            // إنشاء ألوان عشوائية لكل مركز
+            const colors = centersNames.map((_, i) => {
+                const hue = (i * 360 / centersNames.length) % 360;
+                return `hsla(${hue}, 70%, 60%, 0.7)`;
+            });
+            
+            // تدمير الرسوم البيانية القديمة إذا كانت موجودة
+            ['comparisonStudentsChart', 'comparisonProgramsChart', 
+             'comparisonTrainersChart', 'comparisonActivitiesChart'].forEach(id => {
+                const chart = Chart.getChart(id);
+                if (chart) chart.destroy();
+            });
+            
+            // رسم بياني عدد الطلبة
+            new Chart(
+                document.getElementById('comparisonStudentsChart').getContext('2d'),
+                getComparisonChartConfig(
+                    'bar',
+                    'عدد الطلبة',
+                    studentsData,
+                    colors,
+                    centersNames
+                )
+            );
+            
+            // رسم بياني عدد البرامج
+            new Chart(
+                document.getElementById('comparisonProgramsChart').getContext('2d'),
+                getComparisonChartConfig(
+                    'bar',
+                    'عدد البرامج',
+                    programsData,
+                    colors,
+                    centersNames
+                )
+            );
+            
+            // رسم بياني عدد المدربين
+            new Chart(
+                document.getElementById('comparisonTrainersChart').getContext('2d'),
+                getComparisonChartConfig(
+                    'bar',
+                    'عدد المدربين',
+                    trainersData,
+                    colors,
+                    centersNames
+                )
+            );
+            
+            // رسم بياني النشاطات (رحلات وزيارات)
+            new Chart(
+                document.getElementById('comparisonActivitiesChart').getContext('2d'),
+                {
+                    type: 'bar',
+                    data: {
+                        labels: centersNames,
+                        datasets: [
+                            {
+                                label: 'الرحلات',
+                                data: tripsData,
+                                backgroundColor: colors.map(c => c.replace('0.7', '0.6')),
+                                borderColor: colors,
+                                borderWidth: 1
+                            },
+                            {
+                                label: 'الزيارات',
+                                data: visitsData,
+                                backgroundColor: colors.map(c => c.replace('0.7', '0.4')),
+                                borderColor: colors,
+                                borderWidth: 1
+                            }
+                        ]
+                    },
+                    options: getComparisonChartOptions()
+                }
+            );
+            
+            // إضافة وسيلة إيضاح للمراكز
+            const legendContainer = document.createElement('div');
+            legendContainer.className = 'center-legend';
+            
+            centersNames.forEach((name, i) => {
+                const legendItem = document.createElement('div');
+                legendItem.className = 'legend-item';
+                
+                const colorBox = document.createElement('div');
+                colorBox.className = 'legend-color';
+                colorBox.style.backgroundColor = colors[i];
+                
+                const nameSpan = document.createElement('span');
+                nameSpan.textContent = name;
+                nameSpan.style.fontFamily = 'Tajawal';
+                
+                legendItem.appendChild(colorBox);
+                legendItem.appendChild(nameSpan);
+                legendContainer.appendChild(legendItem);
+            });
+            
+            // إضافة وسيلة الإيضاح إلى كل رسم بياني
+            document.querySelectorAll('.comparison-chart-container').forEach(container => {
+                const existingLegend = container.querySelector('.center-legend');
+                if (existingLegend) existingLegend.remove();
+                container.appendChild(legendContainer.cloneNode(true));
+            });
+            
+            comparisonModal.show();
+        }
+        
+        function getComparisonChartConfig(type, label, data, colors, labels) {
+            return {
+                type: type,
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: label,
+                        data: data,
+                        backgroundColor: colors,
+                        borderColor: colors.map(c => c.replace('0.7', '1')),
+                        borderWidth: 1
+                    }]
+                },
+                options: getComparisonChartOptions()
+            };
+        }
+        
+        function getComparisonChartOptions() {
+            return {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false,
+                        rtl: true,
+                        labels: {
+                            font: {
+                                family: 'Tajawal'
+                            }
+                        }
+                    },
+                    tooltip: {
+                        rtl: true,
+                        bodyFont: {
+                            family: 'Tajawal'
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            font: {
+                                family: 'Tajawal'
+                            }
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            font: {
+                                family: 'Tajawal'
+                            }
+                        }
+                    }
+                },
+                animation: {
+                    duration: 1500
+                }
+            };
         }
         
         // بدء التطبيق
