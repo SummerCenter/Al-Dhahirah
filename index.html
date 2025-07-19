@@ -1073,7 +1073,7 @@
             // تعبئة البيانات
             const students = center['عدد الطلبة'] ? parseInt(center['عدد الطلبة']) : 0;
             const halls = center['عدد القاعات'] ? parseInt(center['عدد القاعات']) : 0;
-            const programs = center['عدد البرامج المثقرة'] ? parseInt(center['عدد البرامج المثقرة']) : 0;
+            const programs = center['عدد البرامج المنفذة'] ? parseInt(center['عدد البرامج المنفذة']) : 0;
             const trips = center['عدد الرحلات'] ? parseInt(center['عدد الرحلات']) : 0;
             const visits = center['عدد الزيارات الخارجية'] ? parseInt(center['عدد الزيارات الخارجية']) : 0;
             const trainers = center['عدد المدربين'] ? parseInt(center['عدد المدربين']) : 0;
@@ -1304,7 +1304,7 @@
             // تنسيق البيانات للمقارنة
             const centersNames = allCentersData.map(center => center['اسم المركز']);
             const studentsData = allCentersData.map(center => parseInt(center['عدد الطلبة']) || 0);
-            const programsData = allCentersData.map(center => parseInt(center['عدد البرامج المثقرة']) || 0);
+            const programsData = allCentersData.map(center => parseInt(center['عدد البرامج المنفذة']) || 0);
             const trainersData = allCentersData.map(center => parseInt(center['عدد المدربين']) || 0);
             const tripsData = allCentersData.map(center => parseInt(center['عدد الرحلات']) || 0);
             const visitsData = allCentersData.map(center => parseInt(center['عدد الزيارات الخارجية']) || 0);
