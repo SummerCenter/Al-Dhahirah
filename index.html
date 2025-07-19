@@ -306,6 +306,44 @@
             transform: scale(1.03);
         }
 
+        /* زر المقارنة */
+        .compare-btn-container {
+            text-align: center;
+            margin: 2rem 0;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.5s forwards 0.8s;
+        }
+        
+        .compare-btn {
+            background: var(--accent-color);
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(244, 179, 80, 0.4);
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .compare-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(244, 179, 80, 0.6);
+            background: linear-gradient(135deg, #f4b350, #f8d56b);
+        }
+        
+        .compare-btn i {
+            transition: all 0.3s;
+        }
+        
+        .compare-btn:hover i {
+            transform: rotate(360deg);
+        }
+
         /* حالة عدم الاختيار */
         .no-center {
             text-align: center;
@@ -476,44 +514,6 @@
             100% { transform: translateX(100%) rotate(30deg); }
         }
 
-        /* زر المقارنة */
-        .compare-btn-container {
-            text-align: center;
-            margin: 2rem 0;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeInUp 0.5s forwards 0.8s;
-        }
-        
-        .compare-btn {
-            background: var(--accent-color);
-            border: none;
-            padding: 12px 30px;
-            font-size: 1.2rem;
-            border-radius: 50px;
-            color: white;
-            font-weight: bold;
-            box-shadow: 0 5px 15px rgba(244, 179, 80, 0.4);
-            transition: all 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .compare-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(244, 179, 80, 0.6);
-            background: linear-gradient(135deg, #f4b350, #f8d56b);
-        }
-        
-        .compare-btn i {
-            transition: all 0.3s;
-        }
-        
-        .compare-btn:hover i {
-            transform: rotate(360deg);
-        }
-        
         /* نافذة المقارنة */
         .comparison-modal .modal-content {
             border-radius: 20px;
@@ -785,7 +785,7 @@
                             <div class="stat-item">
                                 <div class="stat-icon-container">
                                     <i class="fas fa-book stat-icon" id="programs-icon"></i>
-                                    <span>عدد البرامج</span>
+                                    <span>عدد البرامج المنفذة</span>
                                 </div>
                                 <span class="stat-value" id="programs-count"></span>
                             </div>
@@ -883,7 +883,7 @@
                     </div>
                     
                     <div class="comparison-chart-container">
-                        <h5 class="comparison-title">عدد البرامج</h5>
+                        <h5 class="comparison-title">عدد البرامج المنفذة</h5>
                         <canvas id="comparisonProgramsChart"></canvas>
                     </div>
                     
