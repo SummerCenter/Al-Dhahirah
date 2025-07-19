@@ -718,22 +718,22 @@
         </div>
     </div>
 
- <footer class="footer text-center">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="guidance-section" style="margin-top: -3rem;"> <!-- تم التعديل هنا -->
-                    <h4 class="mb-3"><i class="fas fa-graduation-cap me-2"></i>دائرة التوجيه المهني والإرشاد الطلابي</h4>
-                    <p class="mb-0">تعليمية محافظة الظاهرة</p>
+    <footer class="footer text-center">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="guidance-section" style="margin-top: -3rem;">
+                        <h4 class="mb-3"><i class="fas fa-graduation-cap me-2"></i>دائرة التوجيه المهني والإرشاد الطلابي</h4>
+                        <p class="mb-0">تعليمية محافظة الظاهرة</p>
+                    </div>
                 </div>
             </div>
+            
+            <div class="mt-5 pt-4">
+                <p class="mb-0">© 2025 نظام إحصائية المراكز الصيفية - صيفي تواصل ونماء. جميع الحقوق محفوظة.</p>
+            </div>
         </div>
-        
-        <div class="mt-5 pt-4">
-            <p class="mb-0">© 2025 نظام إحصائية المراكز الصيفية - صيفي تواصل ونماء. جميع الحقوق محفوظة.</p>
-        </div>
-    </div>
-</footer>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -776,6 +776,11 @@
         
         // المتغيرات العالمية للرسوم البيانية
         let pieChart, barChart, lineChart;
+        
+        // ضبط إعدادات Chart.js للغة العربية
+        Chart.defaults.font.family = 'Tajawal';
+        Chart.defaults.font.size = 14;
+        Chart.defaults.rtl = true;
         
         // جلب البيانات من Google Sheets
         async function fetchData() {
@@ -895,7 +900,7 @@
             
             studentsCount.textContent = students || 'غير متوفر';
             hallsCount.textContent = halls || 'غير متوفر';
-            programsCount.textContent = programs || 'غير متوفر';
+            programsCount.textContent = (programs !== undefined && programs !== null) ? programs : 'غير متوفر'; // التعديل هنا
             tripsCount.textContent = trips || 'غير متوفر';
             visitsCount.textContent = visits || 'غير متوفر';
             trainersCount.textContent = trainers || 'غير متوفر';
@@ -951,10 +956,19 @@
                     plugins: {
                         legend: {
                             position: 'bottom',
-                            rtl: true
+                            rtl: true,
+                            labels: {
+                                font: {
+                                    family: 'Tajawal',
+                                    size: 14
+                                }
+                            }
                         },
                         tooltip: {
                             rtl: true,
+                            bodyFont: {
+                                family: 'Tajawal'
+                            },
                             callbacks: {
                                 label: function(context) {
                                     const label = context.label || '';
@@ -1002,7 +1016,17 @@
                         y: {
                             beginAtZero: true,
                             ticks: {
-                                stepSize: 1
+                                stepSize: 1,
+                                font: {
+                                    family: 'Tajawal'
+                                }
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                font: {
+                                    family: 'Tajawal'
+                                }
                             }
                         }
                     },
@@ -1011,7 +1035,10 @@
                             display: false
                         },
                         tooltip: {
-                            rtl: true
+                            rtl: true,
+                            bodyFont: {
+                                family: 'Tajawal'
+                            }
                         }
                     },
                     animation: {
@@ -1048,12 +1075,27 @@
                             display: false
                         },
                         tooltip: {
-                            rtl: true
+                            rtl: true,
+                            bodyFont: {
+                                family: 'Tajawal'
+                            }
                         }
                     },
                     scales: {
                         y: {
-                            beginAtZero: true
+                            beginAtZero: true,
+                            ticks: {
+                                font: {
+                                    family: 'Tajawal'
+                                }
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                font: {
+                                    family: 'Tajawal'
+                                }
+                            }
                         }
                     },
                     animation: {
